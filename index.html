@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="index.css">
+  <title> Physics </title>
+</head>
+
+<body onload="setup()">
+  <div class="params-holder">
+    <div class="param">
+      <div class="text"> Радиус (м) </div>
+      <input size="8" maxlength="8" type="text" id="r" class="input" placeholder="0.15" />
+    </div>
+    <div class="param">
+      <div class="text"> Витки (шт) </div>
+      <input size="8" maxlength="8" type="text" id="n" class="input" placeholder="100" />
+    </div>
+    <div class="param">
+      <div class="text"> Ток (мА) </div>
+      <input size="8" maxlength="8" type="text" id="i" class="input" placeholder="10" />
+    </div>
+    <div class="param">
+      <button class="button" id="run" onclick="run()">
+        Построить график
+      </button>
+    </div>
+  </div>
+
+  <div class="canvas-holder">
+    <canvas id="canvas" />
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="index.js"></script>
+</body>
+
+</html>
