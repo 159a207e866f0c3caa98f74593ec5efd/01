@@ -17,7 +17,8 @@ const setup = () => {
         y: {
           type: "linear",
           position: "left",
-          title: { display: true, text: "B (мкТЛ)" } }
+          title: { display: true, text: "B (мкТЛ)" }
+        }
       },
       layout: {
         padding: 50,
@@ -25,39 +26,42 @@ const setup = () => {
     },
   });
   document.getElementById("r").value = "0.15";
-  document.getElementById("n").value = "100";
   document.getElementById("i").value = "10";
+  document.getElementById("n").value = "100";
+
+  const [r, i, n] = [0.15, 10, 100]; 
+  make_plot(r, make_data(r, i, n));
 }
 
 const parse_input = () => {
   const r_inp = document.getElementById("r");
-  const n_inp = document.getElementById("n");
   const i_inp = document.getElementById("i");
-  
+  const n_inp = document.getElementById("n");
+
   const r_raw = r_inp.value;
-  const n_raw = n_inp.value;
   const i_raw = i_inp.value;
+  const n_raw = n_inp.value;
 
-  if (isNaN(r_raw) || isNaN(n_raw) || isNaN(i_raw)) {
+  if (isNaN(r_raw) || isNaN(i_raw) || isNaN(n_raw)) {
     return [NaN, NaN, NaN];
   }
-  
+
   const r = parseFloat(r_raw);
-  const n = parseInt(n_raw);
   const i = parseFloat(i_raw);
+  const n = parseInt(n_raw);
 
-  if (r <= 0 || n <= 0 || i <= 0) {
+  if (r <= 0 || i <= 0 || n <= 0) {
     return [NaN, NaN, NaN];
   }
-  if (isNaN(r) || isNaN(n) || isNaN(i)) {
+  if (isNaN(r) || isNaN(i) || isNaN(n)) {
     return [NaN, NaN, NaN];
   }
 
   r_inp.value = r.toString();
-  n_inp.value = n.toString();
   i_inp.value = i.toString();
+  n_inp.value = n.toString();
 
-  return [r, n, i / 1000];
+  return [r, i / 1000, n];
 }
 
 const f = (r, i, x) => {
@@ -70,7 +74,7 @@ const f = (r, i, x) => {
   return b1 + b2;
 }
 
-const make_plot = b_data => {
+const make_plot = (r, b_data) => {
   plot.destroy();
   plot = new Chart(canvas, {
     type: "line",
@@ -78,10 +82,10 @@ const make_plot = b_data => {
       datasets: [
         {
           label: "B(x)",
-          borderColor: 'rgba(75, 192, 192, 1)',
+          borderColor: "rgba(66, 200, 222, .8)",
           data: b_data,
           lineTension: 0.4,
-          pointRadius: 0 
+          pointRadius: 0
         },
       ]
     },
@@ -96,34 +100,67 @@ const make_plot = b_data => {
         y: {
           type: "linear",
           position: "left",
-          title: { display: true, text: "B (мкТЛ)" } }
+          title: { display: true, text: "B (мкТЛ)" }
+        }
       },
       layout: {
         padding: 50,
+      },
+      plugins: {
+        annotation: {
+          annotations: {
+            line1: {
+              type: "line",
+              xMin: 0,
+              xMax: 0,
+              borderWidth: 2,
+              borderColor: "red",
+              label: {
+                content: "Левая катушка",
+                display: true,
+                position: "start"
+              }
+            },
+            line2: {
+              type: "line",
+              xMin: r,
+              xMax: r,
+              borderWidth: 2,
+              borderColor: "red",
+              label: {
+                content: "Правая катушка",
+                display: true,
+                position: "start"
+              }
+            }
+          }
+        }
       }
-    },
+    }
   });
 }
 
-const run = () => {
-  const [r, n, i] = parse_input();
-  if (isNaN(r) || isNaN(n) || isNaN(i)) {
-    alert("Некорретный ввод!");
-    return;
-  }
-
-  const step = 2 * r / 100;
-  let x = 0;
+const make_data = (r, i, n) => {
+  const step = 3 * r / 100;
+  let x = -r;
 
   const data = [];
   while (x < 2 * r) {
     data.push({
       x: x,
-      y: f(r, i, x) * 10**6
+      y: f(r, i * n, x) * 1000000
     });
     x += step;
   }
-
-  make_plot(data);
+  
+  return data;
+}
+const run = () => {
+  const [r, i, n] = parse_input();
+  if (isNaN(r) || isNaN(n) || isNaN(i)) {
+    alert("Некорретный ввод!");
+    return;
+  }
+  make_plot(r, make_data(r, i, n));
 }
 
