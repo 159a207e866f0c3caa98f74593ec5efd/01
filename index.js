@@ -95,12 +95,12 @@ const make_plot = (r, b_data) => {
         x: {
           type: "linear",
           position: "bottom",
-          title: { display: true, text: "x (м)" }
+          title: { display: true, text: "x, м" }
         },
         y: {
           type: "linear",
           position: "left",
-          title: { display: true, text: "B (мкТЛ)" }
+          title: { display: true, text: "B, мкТл" }
         }
       },
       layout: {
